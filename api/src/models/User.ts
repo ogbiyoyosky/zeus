@@ -11,6 +11,7 @@ export interface IUser extends Document {
   password: string;
   createdAt: Date;
   modifiedAt: Date;
+  deletedAt: Date;
 }
 
 var validateEmail = function (email) {
@@ -55,6 +56,11 @@ export let UserSchema: Schema = new Schema({
   modifiedAt: {
     type: Date,
     default: new Date(),
+  },
+
+  deletedAt: {
+    type: Date,
+    default: null,
   },
 });
 

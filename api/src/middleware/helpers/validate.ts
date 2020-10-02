@@ -46,9 +46,7 @@ const validator = {
         .trim()
         .lowercase()
         .error(new Error("A valid email address is required")),
-
       password: Joi.string()
-
         .required()
         .error(new Error("Password is required"))
         .min(6)
@@ -59,19 +57,23 @@ const validator = {
         .required()
         .trim()
         .lowercase()
-        .error(new Error("A team name is required")),
-    }),
-    createFixtureSchema: Joi.object().keys({
-      matchDate: Joi.date().required(),
-      homeTeam: Joi.string()
+        .error(new Error("teamName name is required")),
+      location: Joi.string()
         .required()
         .trim()
         .lowercase()
+        .error(new Error("location name is required")),
+    }),
+    createFixtureSchema: Joi.object().keys({
+      matchDate: Joi.date().required(),
+      stadium: Joi.string().required(),
+      homeTeam: Joi.string()
+        .required()
+        .trim()
         .error(new Error("Home team is required")),
       awayTeam: Joi.string()
         .required()
         .trim()
-        .lowercase()
         .error(new Error("Away team is required")),
     }),
     updateScoresSchema: Joi.object().keys({

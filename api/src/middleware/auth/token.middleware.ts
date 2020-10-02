@@ -5,7 +5,8 @@ const secret = process.env.APP_SECRET_KEY;
 
 const verifyToken = {
   verify(req, res, next) {
-    const token = req.headers.authorization.split(" ")[1];
+    const token = req.headers.authorization;
+
     if (!token) {
       return res.status(httpStatus.UNAUTHORIZED).json({
         message: "Provid a valid token",
@@ -14,7 +15,9 @@ const verifyToken = {
       });
     }
 
-    jwt.verify(token, secret, (err, decoded) => {
+    const authToken = token.split(" ")[1];
+
+    jwt.verify(authToken, secret, (err, decoded) => {
       if (err) {
         return res.status(httpStatus.UNAUTHORIZED).json({
           message: "Not authorized",
