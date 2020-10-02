@@ -86,14 +86,17 @@ class UserController {
         role: "ADMIN",
       })
         .then((user) => {
-          logger.info("Admin Account asuccessfully created");
+          console.log("testing ", user);
+          logger.info("Admin Account asuccessfully created", user);
+
           return res.status(httpStatus.CREATED).send({
-            message: "Account asuccessfully created",
+            message: "Account successfully created",
             status: "created",
             status_code: httpStatus.CREATED,
           });
         })
         .catch((err) => {
+          console.log(err);
           return res.status(httpStatus.BAD_REQUEST).send({
             message: "Account already exist",
             status: "bad request",

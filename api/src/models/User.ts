@@ -1,7 +1,5 @@
 import { Schema, Document, model, Model } from "mongoose";
 import * as bcrypt from "bcrypt-nodejs";
-import * as uniqueValidator from "mongoose-unique-validator";
-import * as passport from "passport";
 
 const SALT_WORK_FACTOR = 10;
 
@@ -61,14 +59,19 @@ export let UserSchema: Schema = new Schema({
 });
 
 UserSchema.pre<IUser>("save", function (next) {
-  let user = this;
-  bcrypt.hash(user.password, SALT_WORK_FACTOR, null, (error, hash) => {
-    if (error) {
-      return next(error);
-    } else {
-      this.password = hash;
+  var user = this;
+
+  if (!user.isModified("password")) return next();
+
+  bcrypt.genSalt(SALT_WORK_FACTOR, function (err, salt) {
+    if (err) return next(err);
+
+    bcrypt.hash(user.password, salt, null, function (err, hash) {
+      if (err) return next(err);
+
+      user.password = hash;
       next();
-    }
+    });
   });
 });
 
@@ -95,6 +98,12 @@ export const passwordMethod = (UserSchema.methods = {
     });
   },
 });
+
+UserSchema.methods.toJSON = function () {
+  var obj = this.toObject();
+  delete obj.password;
+  return obj;
+};
 
 const UserModel: Model<UserSchemaDoc> = model<UserSchemaDoc>(
   "User",

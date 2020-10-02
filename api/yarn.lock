@@ -3396,7 +3396,7 @@ json5@^1.0.1:
   dependencies:
     minimist "^1.2.0"
 
-jsonwebtoken@^8.2.0:
+jsonwebtoken@^8.2.0, jsonwebtoken@^8.5.1:
   version "8.5.1"
   resolved "https://registry.yarnpkg.com/jsonwebtoken/-/jsonwebtoken-8.5.1.tgz#00e71e0b8df54c2121a1f26137df2280673bcc0d"
   integrity sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==
@@ -4969,11 +4969,6 @@ rx@2.3.24:
   version "2.3.24"
   resolved "https://registry.yarnpkg.com/rx/-/rx-2.3.24.tgz#14f950a4217d7e35daa71bbcbe58eff68ea4b2b7"
   integrity sha1-FPlQpCF9fjXapxu8vljv9o6ksrc=
-
-safe-await@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/safe-await/-/safe-await-1.0.0.tgz#99a418dc208678bc4658e01ab60266682cf562b0"
-  integrity sha512-aak7LPeG0KNhwNpUlyV6p1S6f0FX+J1Tnreb9igmk+UFX4c690L/vu7mAnjOfnZq20YsI+gayk4i/PTL0lAXuw==
 
 safe-buffer@5.1.2, safe-buffer@~5.1.0, safe-buffer@~5.1.1:
   version "5.1.2"
