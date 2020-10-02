@@ -26,7 +26,7 @@ class AuthController {
   ) {}
 
   /**
-   * Create a user in the database
+   * Authenticate a user in the system
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
