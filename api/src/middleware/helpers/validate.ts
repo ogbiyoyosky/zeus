@@ -7,13 +7,11 @@ const validator = {
     const result = schema.validate(req.body);
 
     if (result.error) {
-      return res
-        .json({
-          status: "bad request",
-          status_code: 400,
-          error: result.error.message,
-        })
-        .status(400);
+      return res.status(400).send({
+        status: "bad request",
+        status_code: 400,
+        error: result.error.message,
+      });
     }
 
     req.body = result.value;

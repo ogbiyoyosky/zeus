@@ -19,7 +19,7 @@ class AuthController {
    * @public
    */
 
-  public static async createUserAccount(
+  public static createUserAccount(
     req: Request,
     res: Response,
     next: NextFunction
@@ -34,11 +34,7 @@ class AuthController {
    * @public
    */
 
-  public static async authenticate(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {
+  public static authenticate(req: Request, res: Response, next: NextFunction) {
     try {
       const { email, password }: ILoginArgs = req.body;
 

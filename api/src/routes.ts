@@ -6,7 +6,7 @@ import validate from "./middleware/helpers/validate";
 
 const router = Router();
 
-//Authentication Routes
+//Authentication Route
 
 router.post(
   "/api/auth/user/register",
