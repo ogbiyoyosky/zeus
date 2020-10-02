@@ -46,6 +46,10 @@ export let UserSchema: Schema = new Schema({
     required: "Please enter a password",
     min: "Password should be at least 6 characters",
   },
+  role: {
+    type: String,
+    required: true,
+  },
   createdAt: {
     type: Date,
     default: new Date(),
@@ -56,11 +60,9 @@ export let UserSchema: Schema = new Schema({
   },
 });
 
-UserSchema.plugin(uniqueValidator);
-
 UserSchema.pre<IUser>("save", function (next) {
   let user = this;
-  bcrypt.hash(user.password, SALT_WORK_FACTOR, (error, hash) => {
+  bcrypt.hash(user.password, SALT_WORK_FACTOR, null, (error, hash) => {
     if (error) {
       return next(error);
     } else {

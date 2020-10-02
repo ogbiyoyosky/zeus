@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import UserController from "./controllers/user.controller";
+import AuthController from "./controllers/auth.controller";
 import validate from "./middleware/helpers/validate";
 
 const router = Router();
@@ -8,7 +9,7 @@ const router = Router();
 //Authentication Routes
 
 router.post(
-  "/api/auth/admin/register-user",
+  "/api/auth/user/register",
   validate.validateBody(validate.schemas.authSchema),
   UserController.createUserAccount
 );
@@ -16,11 +17,11 @@ router.post(
 router.post(
   "/api/auth/signin",
   validate.validateBody(validate.schemas.authLoginSchema),
-  UserController.signIn
+  AuthController.authenticate
 );
 
 router.post(
-  "/api/auth/user/register-admin",
+  "/api/auth/admin/register",
   validate.validateBody(validate.schemas.authSchema),
   UserController.createAdminAccount
 );

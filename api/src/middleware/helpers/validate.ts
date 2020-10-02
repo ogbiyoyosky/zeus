@@ -1,12 +1,16 @@
 import Joi from "@hapi/joi";
+import logger from "../../logger";
 
 const validator = {
   validateBody: (schema) => (req, res, next) => {
+    logger.info("body", req.body);
     const result = schema.validate(req.body);
+
     if (result.error) {
       return res
         .json({
-          status: 400,
+          status: "bad request",
+          status_code: 400,
           error: result.error.message,
         })
         .status(400);
@@ -19,17 +23,15 @@ const validator = {
   schemas: {
     authSchema: Joi.object().keys({
       firstName: Joi.string()
-        .regex(/^[a-zA-Z]*$/)
         .required()
         .trim()
         .lowercase()
-        .error(new Error("FirstName is required")),
+        .error(new Error("firstName is required")),
       lastName: Joi.string()
-        .regex(/^[a-zA-Z\\-]*$/)
         .required()
         .trim()
         .lowercase()
-        .error(new Error("LastName is required")),
+        .error(new Error("lastName is required")),
       email: Joi.string()
         .email()
         .required()
@@ -42,7 +44,6 @@ const validator = {
     }),
     authLoginSchema: Joi.object().keys({
       email: Joi.string()
-        .regex(/\S+@\S+\.\S+/)
         .required()
         .trim()
         .lowercase()
