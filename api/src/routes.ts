@@ -31,31 +31,32 @@ router.post(
 );
 
 router.post(
-  "/api/team",
+  "/api/teams",
   validate.validateBody(validate.schemas.createTeamSchema),
   TeamController.createTeam
 );
 router.get(
-  "/api/team/:team_id",
+  "/api/teams/:team_id",
   verifyToken.verify,
   permissions.adminOnly,
   TeamController.viewTeam
 );
 router.put(
-  "/api/team/:team_id",
+  "/api/teams/:team_id",
   verifyToken.verify,
   permissions.adminOnly,
   TeamController.editTeam
 );
+
 router.delete(
-  "/api/team/:team_id",
+  "/api/teams/:team_id",
   verifyToken.verify,
   permissions.adminOnly,
   TeamController.deleteTeam
 );
 
 router.post(
-  "/fixtures",
+  "/api/fixtures",
   verifyToken.verify,
   permissions.adminOnly,
   validate.validateBody(validate.schemas.createFixtureSchema),
@@ -63,14 +64,14 @@ router.post(
 );
 
 router.get(
-  "/fixtures/:id",
+  "/api/fixtures/:fixture_id",
   verifyToken.verify,
   permissions.adminOnly,
   FixtureController.viewFixture
 );
 
-router.patch(
-  "/fixtures/:id",
+router.put(
+  "/api/fixtures/:fixture_id",
   verifyToken.verify,
   permissions.adminOnly,
   validate.validateBody(validate.schemas.createFixtureSchema),
@@ -78,10 +79,17 @@ router.patch(
 );
 
 router.delete(
-  "/fixtures/:id",
+  "/api/fixtures/:fixture_id",
   verifyToken.verify,
   permissions.adminOnly,
   FixtureController.deleteFixture
+);
+
+router.get(
+  "/api/fixtures/:fixture_id/generate-link",
+  verifyToken.verify,
+  permissions.adminOnly,
+  FixtureController.generateLink
 );
 
 export default router;

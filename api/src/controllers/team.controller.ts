@@ -6,8 +6,11 @@ import jwt from "jsonwebtoken";
 import logger from "../logger";
 
 interface ITeamArgs {
+  _id: any;
   teamName: string;
   location: string;
+  members: Array<any>;
+  description: string;
 }
 
 class TeamController {
@@ -22,11 +25,13 @@ class TeamController {
 
   public static createTeam(req: Request, res: Response, next: NextFunction) {
     try {
-      const { teamName, location } = req.body;
+      const { teamName, members, description, location } = req.body;
 
       TeamModel.create<ITeamArgs>({
         teamName,
+        members,
         location,
+        description,
       })
         .then((team) => {
           logger.info("Admin Account asuccessfully created", team);
@@ -39,11 +44,21 @@ class TeamController {
           });
         })
         .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team already exist",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+          if (err.name === "ValidationError") {
+            return res.status(httpStatus.BAD_REQUEST).send({
+              message: err.message,
+              status: "bad request",
+              status_code: httpStatus.BAD_REQUEST,
+            });
+          }
+
+          if (err.name === "MongoError") {
+            return res.status(httpStatus.BAD_REQUEST).send({
+              message: "Team already exist",
+              status: "bad request",
+              status_code: httpStatus.BAD_REQUEST,
+            });
+          }
         });
     } catch (err) {
       logger.info("Internal server error", err);
@@ -89,7 +104,6 @@ class TeamController {
           });
         })
         .catch((err) => {
-          console.log(err);
           return res.status(httpStatus.BAD_REQUEST).send({
             message: "Team not found",
             status: "bad request",
