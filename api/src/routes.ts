@@ -35,6 +35,8 @@ router.post(
   validate.validateBody(validate.schemas.createTeamSchema),
   TeamController.createTeam
 );
+
+router.get("/api/teams", TeamController.allTeam);
 router.get(
   "/api/teams/:team_id",
   verifyToken.verify,

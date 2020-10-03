@@ -35,7 +35,7 @@ var teamEnum = {
     "Southampton",
     "Tottenham Hotspur",
     "Watford",
-    "West Ham United",
+    "Westham United",
     "Wolverhampton Wanderers",
   ],
   message: "Provide a valid premier league team",
