@@ -66,6 +66,18 @@ router.post(
 );
 
 router.get(
+  "/api/fixtures/completed",
+  verifyToken.verify,
+  FixtureController.completedFixture
+);
+
+router.get(
+  "/api/fixtures/pending",
+  verifyToken.verify,
+  FixtureController.pendingFixture
+);
+
+router.get(
   "/api/fixtures/:fixture_id",
   verifyToken.verify,
   permissions.adminOnly,

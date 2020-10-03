@@ -165,6 +165,88 @@ class FixtureController {
   }
 
   /**
+   * View all Completed Fixture
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async completedFixture(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const fixture = await FixtureModel.find({ status: "completed" })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all completed fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: fixture,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * View all Completed Fixture
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async pendingFixture(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const fixtures = await FixtureModel.find({ status: "pending" })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all pending fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: fixtures,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
    * Delete a Fixture
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback

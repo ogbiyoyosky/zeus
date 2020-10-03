@@ -101,7 +101,7 @@ class TeamController {
             message: "Successfully  fetched the team",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [team],
+            results: team,
           });
         })
         .catch((err) => {
@@ -146,7 +146,7 @@ class TeamController {
         message: "Successfully  fetched all teams",
         status: "ok",
         status_code: httpStatus.OK,
-        results: [teams],
+        results: teams,
       });
     } catch (error) {
       console.log(error);
@@ -198,7 +198,7 @@ class TeamController {
             message: "Successfully  updated the team",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [team],
+            results: team,
           });
         })
         .catch((err) => {
