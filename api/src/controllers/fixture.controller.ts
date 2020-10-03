@@ -1,18 +1,20 @@
 import { Request, Response, NextFunction } from "express";
 import * as mongoose from "mongoose";
-import TeamModel, { ITeam } from "../models/Team";
+import FixtureModel, { IFixture } from "../models/Fixture";
 import * as httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import logger from "../logger";
+import { uuid } from "uuidv4";
 
 interface IFixtureArgs {
-  teamName: string;
-  location: string;
+  homeTeam: [];
+  awayTeam: [];
+  details: [];
 }
 
 class FixtureController {
   /**
-   * Create a team in the database
+   * Add a fixture.
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
@@ -22,28 +24,24 @@ class FixtureController {
 
   public static addFixture(req: Request, res: Response, next: NextFunction) {
     try {
-      const { teamName, location } = req.body;
+      const { homeTeam, awayTeam, details } = req.body;
 
-      TeamModel.create<ITeamArgs>({
-        teamName,
-        location,
+      FixtureModel.create<IFixtureArgs>({
+        homeTeam,
+        awayTeam,
+        details,
       })
-        .then((team) => {
-          logger.info("Admin Account asuccessfully created", team);
-
+        .then((fixture) => {
           return res.status(httpStatus.CREATED).send({
-            message: "Team successfully created",
+            message: "Fixture successfully created",
             status: "created",
             status_code: httpStatus.CREATED,
-            results: [team],
+            results: [fixture],
           });
         })
         .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team already exist",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+          console.log(err);
+          logger.info(err);
         });
     } catch (err) {
       logger.info("Internal server error", err);
@@ -56,7 +54,7 @@ class FixtureController {
   }
 
   /**
-   * View a Team
+   * View a Fixture
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
@@ -70,28 +68,28 @@ class FixtureController {
     next: NextFunction
   ) {
     try {
-      const { team_id } = req.params;
+      const { fixture_id } = req.params;
 
-      TeamModel.findOne({ _id: team_id })
-        .then((team) => {
-          if (!team)
+      FixtureModel.findOne({ _id: fixture_id })
+        .then((fixture) => {
+          if (!fixture)
             return res.status(httpStatus.BAD_REQUEST).send({
-              message: "Team not found",
+              message: "Fixture not found",
               status: "bad request",
               status_code: httpStatus.BAD_REQUEST,
             });
 
           return res.status(httpStatus.OK).send({
-            message: "Successfully  fetched the team",
+            message: "Successfully fetched the fixture",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [team],
+            results: [fixture],
           });
         })
         .catch((err) => {
           console.log(err);
           return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team not found",
+            message: "Fixture not found",
             status: "bad request",
             status_code: httpStatus.BAD_REQUEST,
           });
@@ -107,7 +105,7 @@ class FixtureController {
   }
 
   /**
-   * Edit a Team
+   * Edit a Fixture
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
@@ -121,7 +119,7 @@ class FixtureController {
     next: NextFunction
   ) {
     try {
-      const { team_id } = req.params;
+      const { fixture_id } = req.params;
 
       var options = {
         // Return the document after updates are applied
@@ -131,9 +129,9 @@ class FixtureController {
         setDefaultsOnInsert: true,
       };
 
-      TeamModel.findOneAndUpdate(
+      FixtureModel.findOneAndUpdate(
         {
-          _id: team_id,
+          _id: fixture_id,
         },
         {
           ...req.body,
@@ -143,7 +141,7 @@ class FixtureController {
       )
         .then((team) => {
           return res.status(httpStatus.OK).send({
-            message: "Successfully  updated the team",
+            message: "Successfully  updated the Fixture",
             status: "ok",
             status_code: httpStatus.OK,
             results: [team],
@@ -152,7 +150,7 @@ class FixtureController {
         .catch((err) => {
           console.log(err);
           return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team not found",
+            message: "Fixture not found",
             status: "bad request",
             status_code: httpStatus.BAD_REQUEST,
           });
@@ -167,7 +165,89 @@ class FixtureController {
   }
 
   /**
-   * Delete a Team
+   * View all Completed Fixture
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async completedFixture(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const fixture = await FixtureModel.find({ status: "completed" })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all completed fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: fixture,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * View all Completed Fixture
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async pendingFixture(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const fixtures = await FixtureModel.find({ status: "pending" })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all pending fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: fixtures,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * Delete a Fixture
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
@@ -181,26 +261,82 @@ class FixtureController {
     next: NextFunction
   ) {
     try {
-      const { team_id } = req.params;
-      TeamModel.findOneAndDelete(
+      const { fixture_id } = req.params;
+      FixtureModel.findOneAndDelete(
         {
-          _id: team_id,
+          _id: fixture_id,
         },
         {
           ...req.body,
           deletedAt: new Date(),
         }
       )
-        .then((team) => {
+        .then((fixture) => {
           return res.status(httpStatus.OK).send({
-            message: "Successfully deleted the team",
+            message: "Successfully deleted the the fixture",
             status: "ok",
             status_code: httpStatus.OK,
           });
         })
         .catch((err) => {
           return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team not found",
+            message: "Fixture not found",
+            status: "bad request",
+            status_code: httpStatus.BAD_REQUEST,
+          });
+        });
+    } catch (error) {
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * Generate a unique link for the fixture
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async generateLink(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { fixture_id } = req.params;
+      const link = uuid();
+
+      FixtureModel.findOneAndUpdate(
+        {
+          _id: fixture_id,
+        },
+        {
+          generatedLink: link,
+        }
+      )
+        .then((fixture) => {
+          return res.status(httpStatus.OK).send({
+            message:
+              "Successfully generated a unique link for the fixture fixture",
+            status: "ok",
+            status_code: httpStatus.OK,
+            results: [
+              {
+                fixture_link: `${process.env.BASE_URL}/api/fixtures/link/${link}`,
+                fixture,
+              },
+            ],
+          });
+        })
+        .catch((err) => {
+          return res.status(httpStatus.BAD_REQUEST).send({
+            message: "Fixture not found",
             status: "bad request",
             status_code: httpStatus.BAD_REQUEST,
           });

@@ -1,6 +1,14 @@
 import Joi from "@hapi/joi";
 import logger from "../../logger";
 
+const members = Joi.object().keys({
+  name: Joi.string().required().trim().error(new Error("name is required")),
+  position: Joi.string()
+    .required()
+    .trim()
+    .error(new Error("position is required")),
+});
+
 const validator = {
   validateBody: (schema) => (req, res, next) => {
     logger.info("body", req.body);
@@ -56,25 +64,29 @@ const validator = {
       teamName: Joi.string()
         .required()
         .trim()
-        .lowercase()
         .error(new Error("teamName name is required")),
       location: Joi.string()
         .required()
         .trim()
-        .lowercase()
         .error(new Error("location name is required")),
+      description: Joi.string()
+        .required()
+        .trim()
+        .error(new Error("location name is required")),
+      members: Joi.array()
+        .required()
+        .error(new Error("members are required"))
+        .items(members),
     }),
     createFixtureSchema: Joi.object().keys({
-      matchDate: Joi.date().required(),
-      stadium: Joi.string().required(),
-      homeTeam: Joi.string()
+      details: Joi.array().required(),
+      homeTeam: Joi.array()
         .required()
-        .trim()
         .error(new Error("Home team is required")),
-      awayTeam: Joi.string()
+      awayTeam: Joi.array()
         .required()
-        .trim()
         .error(new Error("Away team is required")),
+      status: Joi.string().trim(),
     }),
     updateScoresSchema: Joi.object().keys({
       homeTeamScore: Joi.number()

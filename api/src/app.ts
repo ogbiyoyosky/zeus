@@ -15,6 +15,13 @@ app.set("port", process.env.PORT || 3000);
 
 app.use(routes);
 
+app.use(function (req, res, next) {
+  return res.status(404).send({
+    status: "Not Found",
+    status_code: 404,
+  });
+});
+
 app.use(
   (err: ApplicationError, req: Request, res: Response, next: NextFunction) => {
     if (res.headersSent) {

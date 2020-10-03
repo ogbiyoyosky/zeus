@@ -6,8 +6,11 @@ import jwt from "jsonwebtoken";
 import logger from "../logger";
 
 interface ITeamArgs {
+  _id: any;
   teamName: string;
   location: string;
+  members: Array<any>;
+  description: string;
 }
 
 class TeamController {
@@ -22,11 +25,13 @@ class TeamController {
 
   public static createTeam(req: Request, res: Response, next: NextFunction) {
     try {
-      const { teamName, location } = req.body;
+      const { teamName, members, description, location } = req.body;
 
       TeamModel.create<ITeamArgs>({
         teamName,
+        members,
         location,
+        description,
       })
         .then((team) => {
           logger.info("Admin Account asuccessfully created", team);
@@ -39,11 +44,22 @@ class TeamController {
           });
         })
         .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team already exist",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+          console.log(err);
+          if (err.name === "ValidationError") {
+            return res.status(httpStatus.BAD_REQUEST).send({
+              message: err.message,
+              status: "bad request",
+              status_code: httpStatus.BAD_REQUEST,
+            });
+          }
+
+          if (err.name === "MongoError") {
+            return res.status(httpStatus.BAD_REQUEST).send({
+              message: "Team already exist",
+              status: "bad request",
+              status_code: httpStatus.BAD_REQUEST,
+            });
+          }
         });
     } catch (err) {
       logger.info("Internal server error", err);
@@ -85,17 +101,53 @@ class TeamController {
             message: "Successfully  fetched the team",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [team],
+            results: team,
           });
         })
         .catch((err) => {
-          console.log(err);
           return res.status(httpStatus.BAD_REQUEST).send({
             message: "Team not found",
             status: "bad request",
             status_code: httpStatus.BAD_REQUEST,
           });
         });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * View all Team
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async allTeam(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const teams = await TeamModel.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all teams",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: teams,
+      });
     } catch (error) {
       console.log(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -146,7 +198,7 @@ class TeamController {
             message: "Successfully  updated the team",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [team],
+            results: team,
           });
         })
         .catch((err) => {
