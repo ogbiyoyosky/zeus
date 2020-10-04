@@ -3,6 +3,7 @@ import UserModel, { IUser } from "../models/User";
 import * as httpStatus from "http-status";
 import jwt from "jsonwebtoken";
 import logger from "../logger";
+import { uuid } from "uuidv4";
 
 interface ILoginArgs {
   email: string;
@@ -11,7 +12,7 @@ interface ILoginArgs {
 
 class AuthController {
   /**
-   * Create a user in the database
+   * Generate token
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
    * @param {Function} next: Express.js middleware callback
@@ -19,11 +20,11 @@ class AuthController {
    * @public
    */
 
-  public static createUserAccount(
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ) {}
+  public static generateToken(req: Request, res: Response, next: NextFunction) {
+    try {
+      const refreshToken = req.body.token;
+    } catch (error) {}
+  }
 
   /**
    * Authenticate a user in the system
@@ -57,7 +58,7 @@ class AuthController {
           }
 
           // Generate token
-          const token = jwt.sign(
+          const accessToken = jwt.sign(
             {
               id: user.id,
               role: user.role,
@@ -68,11 +69,14 @@ class AuthController {
             }
           );
 
+          //refresh tokens
+          const refreshToken = uuid();
+
           return res.status(httpStatus.OK).send({
             message: "Successfully logged in",
             status: "ok",
             status_code: httpStatus.OK,
-            results: [{ user: user.toJSON(), token, type: "bearer" }],
+            results: [{ user: user.toJSON(), accessToken, refreshToken }],
           });
         });
       });
