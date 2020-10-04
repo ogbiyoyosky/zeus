@@ -4,6 +4,7 @@ import path from "path";
 import express, { Request, Response, NextFunction } from "express";
 import ApplicationError from "./errors/application-error";
 import routes from "./routes";
+require("./redis-connection");
 
 const app = express();
 
