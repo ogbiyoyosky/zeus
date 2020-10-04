@@ -4,7 +4,7 @@ import UserController from "./controllers/user.controller";
 import FixtureController from "./controllers/fixture.controller";
 import AuthController from "./controllers/auth.controller";
 import TeamController from "./controllers/team.controller";
-import validate from "./middleware/helpers/validate";
+import validate from "./middleware/validators/validate";
 import verifyToken from "./middleware/auth/token.middleware";
 import permissions from "./middleware/auth/role.middleware";
 
@@ -21,6 +21,10 @@ router.post(
   validate.validateBody(validate.schemas.authLoginSchema),
   AuthController.authenticate
 );
+
+router.post("/api/auth/logout", AuthController.logout);
+
+router.post("/api/auth/refresh-token", AuthController.generateToken);
 
 router.post(
   "/api/auth/admin/register",
