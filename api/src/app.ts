@@ -6,6 +6,7 @@ import ApplicationError from "./errors/application-error";
 import routes from "./routes";
 import connect from "./mongo-connection";
 import { client } from "./redis-connection";
+import { rateLimiter } from "./middleware/limiter";
 
 const app = express();
 connect();
@@ -14,6 +15,8 @@ client();
 app.use(compression());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use(rateLimiter);
 
 app.set("port", process.env.PORT || 3000);
 
