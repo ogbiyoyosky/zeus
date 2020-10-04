@@ -138,7 +138,7 @@ class FixtureController {
         .exec();
 
       return res.status(httpStatus.OK).send({
-        message: "Successfully  fetched all teams",
+        message: "Successfully  fetched search results",
         status: "ok",
         status_code: httpStatus.OK,
         results: {

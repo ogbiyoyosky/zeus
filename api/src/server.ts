@@ -7,7 +7,6 @@ if (result.error) {
 }
 
 import app from "./app";
-//import MongoConnection from "./mongo-connection";
 import logger from "./logger";
 
 app.listen(app.get("port"), (): void => {

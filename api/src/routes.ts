@@ -41,12 +41,7 @@ router.post(
 router.get("/api/teams/search", TeamController.search);
 
 router.get("/api/teams", verifyToken.verify, TeamController.allTeam);
-router.get(
-  "/api/teams/:team_id",
-  verifyToken.verify,
-  permissions.adminOnly,
-  TeamController.viewTeam
-);
+router.get("/api/teams/:team_id", verifyToken.verify, TeamController.viewTeam);
 router.put(
   "/api/teams/:team_id",
   verifyToken.verify,
