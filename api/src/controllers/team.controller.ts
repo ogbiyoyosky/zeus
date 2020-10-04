@@ -169,7 +169,9 @@ class TeamController {
 
   public static async search(req: Request, res: Response, next: NextFunction) {
     try {
-      let { team, description, member } = req.query as any;
+      let { team, description, member, page, perPage } = req.query as any;
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
 
       const teams = await TeamModel.find({
         $or: <any>[
@@ -178,15 +180,23 @@ class TeamController {
           { "members.0.name": new RegExp(`^${member}$`, "i") },
         ],
       })
-        .skip(1)
-        .limit(10)
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
         .exec();
 
       return res.status(httpStatus.OK).send({
         message: "Successfully  fetched all teams",
         status: "ok",
         status_code: httpStatus.OK,
-        results: teams,
+        results: {
+          teams,
+          __meta: {
+            count: teams.length,
+            page,
+            perPage,
+          },
+        },
       });
     } catch (error) {
       console.log(error);

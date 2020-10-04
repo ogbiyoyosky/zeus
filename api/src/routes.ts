@@ -36,7 +36,7 @@ router.post(
 
 router.get("/api/teams/search", TeamController.search);
 
-router.get("/api/teams", TeamController.allTeam);
+router.get("/api/teams", verifyToken.verify, TeamController.allTeam);
 router.get(
   "/api/teams/:team_id",
   verifyToken.verify,
@@ -64,6 +64,8 @@ router.post(
   validate.validateBody(validate.schemas.createFixtureSchema),
   FixtureController.addFixture
 );
+
+router.get("/api/fixtures/search", FixtureController.search);
 
 router.get(
   "/api/fixtures/completed",

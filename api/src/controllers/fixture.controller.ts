@@ -105,6 +105,71 @@ class FixtureController {
   }
 
   /**
+   * Search fixtures
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async search(req: Request, res: Response, next: NextFunction) {
+    try {
+      let {
+        name,
+        date,
+        status,
+        stadium,
+        page,
+        perPage,
+        uniqueLink,
+      } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+
+      const fixtures = await FixtureModel.find({
+        $or: <any>[
+          { status },
+          { uniqueLink },
+          { "homeTeam.0.name": new RegExp(`^${name}$`, "i") },
+          { "awayTeam.0.name": new RegExp(`^${name}$`, "i") },
+          {
+            details: {
+              $elemMatch: { date, stadium: new RegExp(`^${stadium}$`, "i") },
+            },
+          },
+        ],
+      })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all teams",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: {
+          fixtures,
+          __meta: {
+            count: fixtures.length,
+            page,
+            perPage,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
    * Edit a Fixture
    * @param {Object} req: url params
    * @param {Function} res: Express.js response callback
