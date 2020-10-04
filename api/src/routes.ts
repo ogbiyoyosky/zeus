@@ -11,7 +11,7 @@ import permissions from "./middleware/auth/role.middleware";
 const router = Router();
 
 router.post(
-  "/api/auth/user/register",
+  "/api/auth/register",
   validate.validateBody(validate.schemas.authSchema),
   UserController.createUserAccount
 );

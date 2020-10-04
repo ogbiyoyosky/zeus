@@ -4,7 +4,7 @@
   "description": "An API that serves the latest scores of fixtures of matches in a Mock Premier League",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ogbiyoyosky/zeus.git"
+    "url": "https://github.com/ogbiyoyosky/zeus.git"
   },
   "nyc": {
     "extension": [
@@ -42,14 +42,13 @@
     "start-dev": "set NODE_ENV=development && nodemon dist/server.js",
     "lint": "tslint src/**/*.ts -p tsconfig.json",
     "lint:fix": "tslint --fix -c tslint.json 'src/**/*{.ts}",
-    "test": "jest",
+    "test": "jest --forceExit --detectOpenHandles",
     "watch-ts": "tsc-watch  --outDir ./dist --onSuccess \"npm run serve\" --lib ES2015 --skipLibCheck"
   },
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@types/mongoose": "^5.7.36",
     "@types/redis": "^2.8.27",
-    "@types/supertest": "^2.0.10",
     "bcrypt-nodejs": "^0.0.3",
     "body-parser": "^1.19.0",
     "compression": "^1.7.2",
@@ -70,7 +69,6 @@
     "multer": "^1.4.2",
     "path": "^0.12.7",
     "redis": "^3.0.2",
-    "supertest": "^5.0.0",
     "ts-mocha": "^2.0.0",
     "uuidv4": "^6.2.3",
     "winston": "^3.3.3"
@@ -83,22 +81,21 @@
     "@types/lodash": "^4.14.71",
     "@types/mocha": "^8.0.3",
     "@types/node": "^13.13.2",
+    "@types/supertest": "^2.0.10",
     "chai": "^4.2.0",
     "chai-http": "^4.2.0",
     "concurrently": "^3.5.0",
     "istanbul": "^1.0.0-alpha.2",
-    "jest": "^23.6.0",
+    "jest": "^26.4.0",
     "jest-express": "^1.12.0",
     "mocha": "^5.2.0",
     "nodemon": "^1.11.0",
     "nyc": "^13.1.0",
-    "ts-jest": "^23.10.5",
+    "supertest": "^4.0.2",
+    "ts-jest": "^22.10.5",
     "ts-node": "^8.9.0",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"
   },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/sidhantpanda/docker-express-typescript-boilerplate/issues"
-  }
+  "license": "MIT"
 }

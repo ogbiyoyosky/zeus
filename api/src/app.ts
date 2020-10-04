@@ -4,9 +4,13 @@ import path from "path";
 import express, { Request, Response, NextFunction } from "express";
 import ApplicationError from "./errors/application-error";
 import routes from "./routes";
-require("./redis-connection");
+import connect from "./mongo-connection";
+import { client } from "./redis-connection";
 
+import MongoConnection from "./mongo-connection";
 const app = express();
+connect();
+client();
 
 app.use(compression());
 app.use(bodyParser.json());

@@ -43,60 +43,79 @@ const team = {
   score: { type: Number, default: 0 },
 };
 
-export let FixtureSchema: Schema = new Schema({
-  homeTeam: team,
-  awayTeam: team,
-  details: {
-    type: Array,
-    matchTime: {
+export let FixtureSchema: Schema = new Schema(
+  {
+    homeTeam: team,
+    awayTeam: team,
+    details: {
+      type: Array,
+      matchTime: {
+        type: Date,
+        default: new Date(),
+      },
+      staduim: {
+        type: String,
+        enum: [
+          "Vitality Stadium",
+          "The Amex",
+          "Turf Moor",
+          "Cardiff City Stadium",
+          "John Smith's Stadium",
+          "King Power Stadium",
+          "Goodison Park",
+          "Anfield",
+          "Emirates Stadium",
+          "Stamford Bridge",
+          "Selhurst Park",
+          "Craven Cottage",
+          "Wembley Stadium",
+          "London Stadium",
+          "Etihad Stadium",
+          "Old Trafford",
+          "St James Park",
+          "St Mary's Stadium",
+          "Vicarage Road",
+          "Molineux Stadium",
+        ],
+      },
+    },
+    status: { type: String, default: "pending" },
+    generatedLink: {
+      type: String,
+      default: null,
+    },
+    createdAt: {
       type: Date,
       default: new Date(),
     },
-    staduim: {
-      type: String,
-      enum: [
-        "Vitality Stadium",
-        "The Amex",
-        "Turf Moor",
-        "Cardiff City Stadium",
-        "John Smith's Stadium",
-        "King Power Stadium",
-        "Goodison Park",
-        "Anfield",
-        "Emirates Stadium",
-        "Stamford Bridge",
-        "Selhurst Park",
-        "Craven Cottage",
-        "Wembley Stadium",
-        "London Stadium",
-        "Etihad Stadium",
-        "Old Trafford",
-        "St James Park",
-        "St Mary's Stadium",
-        "Vicarage Road",
-        "Molineux Stadium",
-      ],
+    modifiedAt: {
+      type: Date,
+      default: new Date(),
+    },
+
+    deletedAt: {
+      type: Date,
+      default: null,
     },
   },
-  status: { type: String, default: "pending" },
-  generatedLink: {
-    type: String,
-    default: null,
-  },
-  createdAt: {
-    type: Date,
-    default: new Date(),
-  },
-  modifiedAt: {
-    type: Date,
-    default: new Date(),
-  },
+  {
+    emitIndexErrors: true,
+    autoIndex: true,
+  }
+);
 
-  deletedAt: {
-    type: Date,
-    default: null,
+FixtureSchema.index(
+  {
+    "homeTeam.name": "text",
+    "awayTeam.name": "text",
+    generatedLink: "text",
+    "details.matchTime": "text",
+    status: "text",
   },
-});
+  {
+    name: "searchIndex",
+  }
+);
 
 interface FixtureSchemaDoc extends IFixture, Document {}
 
@@ -104,4 +123,13 @@ const FixtureModel: Model<FixtureSchemaDoc> = model<FixtureSchemaDoc>(
   "Fixture",
   FixtureSchema
 );
+
+FixtureModel.on("index", function (err) {
+  if (err) {
+    console.log("ERROR", err);
+  }
+});
+
+FixtureModel.ensureIndexes();
+
 export default FixtureModel;

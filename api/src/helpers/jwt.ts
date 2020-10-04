@@ -1,13 +1,13 @@
 import jwt from "jsonwebtoken";
 const createError = require("http-errors");
-import client from "../redis-connection";
+import { redisClient } from "../redis-connection";
 
 function signAccessToken(payload) {
   return new Promise((resolve, reject) => {
     const secret = process.env.APP_SECRET_KEY;
     const options = {
       expiresIn: "2m",
-      issuer: "zues",
+      issuer: "zeus",
       audience: payload.id,
     };
     jwt.sign(payload, secret, options, (err, token) => {
@@ -34,13 +34,19 @@ function signRefreshToken(payload) {
         reject(createError.InternalServerError());
         return;
       }
-      client.SET(payload.id, token, "EX", 365 * 24 * 60 * 60, (err, reply) => {
-        if (err) {
-          reject(createError.InternalServerError());
-          return;
+      redisClient.SET(
+        payload.id,
+        token,
+        "EX",
+        365 * 24 * 60 * 60,
+        (err, reply) => {
+          if (err) {
+            reject(createError.InternalServerError());
+            return;
+          }
+          resolve(token);
         }
-        resolve(token);
-      });
+      );
     });
   });
 }
@@ -67,7 +73,7 @@ function verifyRefreshToken(refreshToken) {
       if (err) return reject(createError.Unauthorized());
       const userId = payload.aud;
 
-      client.GET(userId, (err, result) => {
+      redisClient.GET(userId, (err, result) => {
         if (err) {
           //reject(createError.InternalServerError());
           return;

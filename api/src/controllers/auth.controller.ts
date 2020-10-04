@@ -7,7 +7,7 @@ import {
   verifyRefreshToken,
 } from "../helpers/jwt";
 import logger from "../logger";
-import client from "../redis-connection";
+import { redisClient } from "../redis-connection";
 
 interface ILoginArgs {
   email: string;
@@ -74,7 +74,7 @@ class AuthController {
         });
       const { id }: any = await verifyRefreshToken(refreshToken);
 
-      client.DEL(id, (err, val) => {
+      redisClient.DEL(id, (err, val) => {
         console.log(err);
         if (err)
           return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({

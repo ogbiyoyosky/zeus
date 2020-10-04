@@ -115,32 +115,23 @@ class FixtureController {
 
   public static async search(req: Request, res: Response, next: NextFunction) {
     try {
-      let {
-        name,
-        date,
-        status,
-        stadium,
-        page,
-        perPage,
-        uniqueLink,
-      } = req.query as any;
+      let { q, page, perPage } = req.query as any;
+
+      //await FixtureModel.deleteMany({});
 
       perPage = perPage ? parseInt(perPage, 10) : 10;
       page = page ? parseInt(page, 10) : 1;
 
-      const fixtures = await FixtureModel.find({
-        $or: <any>[
-          { status },
-          { uniqueLink },
-          { "homeTeam.0.name": new RegExp(`^${name}$`, "i") },
-          { "awayTeam.0.name": new RegExp(`^${name}$`, "i") },
-          {
-            details: {
-              $elemMatch: { date, stadium: new RegExp(`^${stadium}$`, "i") },
-            },
+      const fixtures = await FixtureModel.find(
+        {
+          $text: {
+            $search: q,
           },
-        ],
-      })
+        },
+        {
+          score: { $meta: "textScore" },
+        }
+      )
         .skip((page - 1) * perPage)
         .limit(perPage)
         .sort({ createdAt: -1 })
