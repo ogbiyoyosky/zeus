@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, model, Model } from "mongoose";
 import uniqueValidator from "mongoose-unique-validator";
+
 export interface ITeam extends Document {
   teamName: String;
   members: [
@@ -80,8 +81,10 @@ export let TeamSchema: Schema = new Schema({
   },
 });
 
-interface TeamSchemaDoc extends ITeam, Document {}
 TeamSchema.plugin(uniqueValidator);
+
+interface TeamSchemaDoc extends ITeam, Document {}
+
 const TeamModel: Model<TeamSchemaDoc> = model<TeamSchemaDoc>(
   "Team",
   TeamSchema

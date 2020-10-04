@@ -10,8 +10,6 @@ import permissions from "./middleware/auth/role.middleware";
 
 const router = Router();
 
-//Authentication Route
-
 router.post(
   "/api/auth/user/register",
   validate.validateBody(validate.schemas.authSchema),
@@ -35,6 +33,8 @@ router.post(
   validate.validateBody(validate.schemas.createTeamSchema),
   TeamController.createTeam
 );
+
+router.get("/api/teams/search", TeamController.search);
 
 router.get("/api/teams", TeamController.allTeam);
 router.get(
