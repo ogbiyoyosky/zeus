@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import * as mongoose from "mongoose";
 import TeamModel, { ITeam } from "../models/Team";
 import * as httpStatus from "http-status";
-import jwt from "jsonwebtoken";
+
 import logger from "../logger";
 
 interface ITeamArgs {
@@ -147,6 +147,56 @@ class TeamController {
         status: "ok",
         status_code: httpStatus.OK,
         results: teams,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
+  /**
+   * Search teams
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async search(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { team, description, member, page, perPage } = req.query as any;
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+
+      const teams = await TeamModel.find({
+        $or: <any>[
+          { teamName: new RegExp(`^${team}$`, "i") },
+          { description: new RegExp(`^${description}$`, "i") },
+          { "members.0.name": new RegExp(`^${member}$`, "i") },
+        ],
+      })
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all teams",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: {
+          teams,
+          __meta: {
+            count: teams.length,
+            page,
+            perPage,
+          },
+        },
       });
     } catch (error) {
       console.log(error);
