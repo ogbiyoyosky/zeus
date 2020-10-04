@@ -83,10 +83,36 @@ export let TeamSchema: Schema = new Schema({
 
 TeamSchema.plugin(uniqueValidator);
 
+TeamSchema.index(
+  {
+    teamName: "text",
+    location: "text",
+    "members.name": "text",
+    "members.position": "text",
+    description: "text",
+    status: "text",
+  },
+  {
+    name: "searchIndex",
+  }
+);
+
 interface TeamSchemaDoc extends ITeam, Document {}
 
 const TeamModel: Model<TeamSchemaDoc> = model<TeamSchemaDoc>(
   "Team",
   TeamSchema
 );
+
+TeamModel.on("index", function (err) {
+  if (err) {
+    console.log("ERROR", err);
+  }
+});
+
+// TeamModel.collection.dropIndexes((err, r) => {
+//   console.log(r);
+// });
+
+TeamModel.ensureIndexes();
 export default TeamModel;

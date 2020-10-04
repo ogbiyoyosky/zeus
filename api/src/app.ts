@@ -7,7 +7,6 @@ import routes from "./routes";
 import connect from "./mongo-connection";
 import { client } from "./redis-connection";
 
-import MongoConnection from "./mongo-connection";
 const app = express();
 connect();
 client();

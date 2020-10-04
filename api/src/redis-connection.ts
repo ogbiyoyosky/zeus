@@ -1,12 +1,13 @@
 import { createClient } from "redis";
 import logger from "./logger";
+import redisConfig from "./config/redisConfig";
 
 let redisClient;
 const client = async () => {
   try {
     const client = await createClient({
-      port: 6379,
-      host: "127.0.0.1",
+      port: redisConfig.port,
+      host: redisConfig.host,
     });
 
     client.on("connect", () => {
@@ -14,7 +15,7 @@ const client = async () => {
     });
 
     client.on("ready", () => {
-      logger.info("🔥 Client connected to redis and ready to use...");
+      logger.info(" Client connected to redis and ready to use... 🔥");
     });
 
     client.on("error", (err) => {

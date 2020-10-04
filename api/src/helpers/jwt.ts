@@ -6,7 +6,7 @@ function signAccessToken(payload) {
   return new Promise((resolve, reject) => {
     const secret = process.env.APP_SECRET_KEY;
     const options = {
-      expiresIn: "2m",
+      expiresIn: "24h",
       issuer: "zeus",
       audience: payload.id,
     };

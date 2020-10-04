@@ -169,24 +169,27 @@ class TeamController {
 
   public static async search(req: Request, res: Response, next: NextFunction) {
     try {
-      let { team, description, member, page, perPage } = req.query as any;
+      let { q, page, perPage } = req.query as any;
       perPage = perPage ? parseInt(perPage, 10) : 10;
       page = page ? parseInt(page, 10) : 1;
 
-      const teams = await TeamModel.find({
-        $or: <any>[
-          { teamName: new RegExp(`^${team}$`, "i") },
-          { description: new RegExp(`^${description}$`, "i") },
-          { "members.0.name": new RegExp(`^${member}$`, "i") },
-        ],
-      })
+      const teams = await TeamModel.find(
+        {
+          $text: {
+            $search: q,
+          },
+        },
+        {
+          score: { $meta: "textScore" },
+        }
+      )
         .skip((page - 1) * perPage)
         .limit(perPage)
         .sort({ createdAt: -1 })
         .exec();
 
       return res.status(httpStatus.OK).send({
-        message: "Successfully  fetched all teams",
+        message: "Successfully  fetched search results",
         status: "ok",
         status_code: httpStatus.OK,
         results: {
