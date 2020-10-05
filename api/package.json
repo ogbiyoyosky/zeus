@@ -69,7 +69,6 @@
     "multer": "^1.4.2",
     "path": "^0.12.7",
     "redis": "^3.0.2",
-    "ts-mocha": "^2.0.0",
     "uuidv4": "^6.2.3",
     "winston": "^3.3.3"
   },
@@ -79,7 +78,6 @@
     "@types/express": "^4.0.36",
     "@types/jest": "^26.0.14",
     "@types/lodash": "^4.14.71",
-    "@types/mocha": "^8.0.3",
     "@types/node": "^13.13.2",
     "@types/supertest": "^2.0.10",
     "chai": "^4.2.0",
@@ -92,7 +90,7 @@
     "nodemon": "^1.11.0",
     "nyc": "^13.1.0",
     "supertest": "^4.0.2",
-    "ts-jest": "^22.10.5",
+    "ts-jest": "^26.4.1",
     "ts-node": "^8.9.0",
     "tsc-watch": "^4.2.3",
     "typescript": "^3.8.3"
