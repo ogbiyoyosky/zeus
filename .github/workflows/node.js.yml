@@ -25,7 +25,7 @@ jobs:
           BASE_URL: ${{secrets.BASE_URL}}
           APP_SECRET: ${{secrets.APP_SECRET}}
           REFRESH_SECRET: ${{secrets.REFRESH_SECRET}}
-          REDIS_URL: ${{secret.REDIS_URL}}
+          REDIS_URL: ${{secrets.REDIS_URL}}
           REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
         run: |
           run: npm ci
