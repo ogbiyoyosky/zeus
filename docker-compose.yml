@@ -1,11 +1,31 @@
 version: "3"
 
 services:
+  api-server:
+    build:
+      context: ./
+    container_name: api-server
+    image: api-server
+    restart: unless-stopped
+    environment:
+      - CHOKIDAR_USEPOLLING=1
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ./logs:/logs
+      - "./:/usr/src/services/"
+      - "./node_modules:/usr/src/services/node_modules"
+    networks:
+      - app-network
+    ports:
+      - "4000:4000"
   mongo:
     image: mongo
     container_name: mongo-dev
     restart: always
-
+    networks:
+      - app-network
     volumes:
       - ./data/dev/mongo:/data/db
     ports:
@@ -15,30 +35,8 @@ services:
     container_name: cache
     networks:
       - app-network
-    volumes:
-      - ./redis-data:/data
-    restart: always
     ports:
       - "6379:6379"
-  api-server:
-    build:
-      context: ./api
-    container_name: api-server
-    image: api-server
-    restart: always
-    environment:
-      - CHOKIDAR_USEPOLLING=1
-    depends_on:
-      - mongo
-      - redis
-    volumes:
-      - ./logs:/logs
-      - "./api:/usr/src/services/api"
-      - "./api/node_modules:/usr/src/services/api/node_modules"
-    networks:
-      - app-network
-    ports:
-      - "4000:4000"
 
 networks:
   app-network:
