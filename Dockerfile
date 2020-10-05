@@ -1,12 +1,12 @@
 FROM node:12
 
-RUN mkdir -p /usr/src/services/api/node_modules && chown -R node:node /usr/src/services/api
+RUN mkdir -p /usr/src/services/node_modules && chown -R node:node /usr/src/services/
 
-WORKDIR /usr/src/services/api
+WORKDIR /usr/src/services/
 
-COPY package*.json /usr/src/services/api/
+COPY package*.json /usr/src/services/
 
-ENV PATH /usr/src/services/api/node_modules/.bin:$PATH
+ENV PATH /usr/src/services/node_modules/.bin:$PATH
 
 RUN npm i
 

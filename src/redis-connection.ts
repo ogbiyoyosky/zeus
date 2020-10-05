@@ -5,9 +5,9 @@ import redisConfig from "./config/redisConfig";
 let redisClient;
 const client = async () => {
   try {
-    const client = await createClient({
-      port: redisConfig.port,
-      host: redisConfig.host,
+
+    const client = await createClient(`redis://${redisConfig.url}`, {
+      password: redisConfig.password
     });
 
     client.on("connect", () => {
