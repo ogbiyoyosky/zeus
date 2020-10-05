@@ -1,6 +1,6 @@
 require("dotenv").config();
 
-const mongo_uri 
+let mongo_uri 
 
 if(process.env.NODE_ENV != "test") {
   mongo_uri = process.env.MONGO_URI
