@@ -10,7 +10,7 @@ const handler = function (req, res /*next*/) {
 };
 export const rateLimiter = rateLimit({
   windowMs: 24 * 60 * 60 * 1000, // 24 hrs in milliseconds
-  max: 100,
+  max: 10000000,
   handler: handler,
   headers: true,
 });

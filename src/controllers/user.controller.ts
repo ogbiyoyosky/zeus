@@ -45,15 +45,15 @@ class UserController {
           });
         })
         .catch((err) => {
-          logger.info("Account already exist", err);
-          return res.status(httpStatus.BAD_REQUEST).send({
+          logger.info("Account already exist", err.message);
+          return res.status(httpStatus.CONFLICT).send({
             message: "Account already exist",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
+            status: "conflict",
+            status_code: httpStatus.CONFLICT,
           });
         });
     } catch (err) {
-      logger.info("Internal server error", err);
+      logger.info("Internal server error", err.message);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",
         status: "Internal Server Error",
@@ -86,8 +86,7 @@ class UserController {
         role: "ADMIN",
       })
         .then((user) => {
-          console.log("testing ", user);
-          logger.info("Admin Account asuccessfully created", user);
+          logger.info("Admin Account asuccessfully created");
 
           return res.status(httpStatus.CREATED).send({
             message: "Account successfully created",
@@ -96,11 +95,11 @@ class UserController {
           });
         })
         .catch((err) => {
-          console.log(err);
-          return res.status(httpStatus.BAD_REQUEST).send({
+          logger.info(err.message);
+          return res.status(httpStatus.CONFLICT).send({
             message: "Account already exist",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
+            status: "conflict",
+            status_code: httpStatus.CONFLICT,
           });
         });
     } catch (err) {

@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction } from "express";
-import * as mongoose from "mongoose";
 import TeamModel, { ITeam } from "../models/Team";
 import * as httpStatus from "http-status";
 
@@ -34,17 +33,16 @@ class TeamController {
         description,
       })
         .then((team) => {
-          logger.info("Admin Account asuccessfully created", team);
+          logger.info("Admin Account asuccessfully created");
 
           return res.status(httpStatus.CREATED).send({
             message: "Team successfully created",
             status: "created",
             status_code: httpStatus.CREATED,
-            results: [team],
+            results: team,
           });
         })
         .catch((err) => {
-          console.log(err);
           if (err.name === "ValidationError") {
             return res.status(httpStatus.BAD_REQUEST).send({
               message: err.message,
@@ -54,10 +52,10 @@ class TeamController {
           }
 
           if (err.name === "MongoError") {
-            return res.status(httpStatus.BAD_REQUEST).send({
+            return res.status(httpStatus.CONFLICT).send({
               message: "Team already exist",
-              status: "bad request",
-              status_code: httpStatus.BAD_REQUEST,
+              status: "conflict",
+              status_code: httpStatus.CONFLICT,
             });
           }
         });
@@ -248,7 +246,7 @@ class TeamController {
       )
         .then((team) => {
           return res.status(httpStatus.OK).send({
-            message: "Successfully  updated the team",
+            message: "Successfully updated the team",
             status: "ok",
             status_code: httpStatus.OK,
             results: team,

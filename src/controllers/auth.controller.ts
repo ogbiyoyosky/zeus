@@ -75,7 +75,6 @@ class AuthController {
       const { id }: any = await verifyRefreshToken(refreshToken);
 
       redisClient.DEL(id, (err, val) => {
-        console.log(err);
         if (err)
           return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
             message: "Internal Server Error",
@@ -140,7 +139,7 @@ class AuthController {
           });
 
           return res.status(httpStatus.OK).send({
-            message: "Successfully logged in",
+            message: "Successfully logged In",
             status: "ok",
             status_code: httpStatus.OK,
             results: [{ user: user.toJSON(), accessToken, refreshToken }],

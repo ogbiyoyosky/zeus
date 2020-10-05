@@ -36,7 +36,7 @@ class FixtureController {
             message: "Fixture successfully created",
             status: "created",
             status_code: httpStatus.CREATED,
-            results: [fixture],
+            results: fixture,
           });
         })
         .catch((err) => {
