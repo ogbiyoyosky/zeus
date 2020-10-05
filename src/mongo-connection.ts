@@ -8,6 +8,7 @@ dotenv.config();
 
 const connect = async () => {
   try {
+    console.log(mongoConfig.mongo_uri)
     const db = await mongoose.connect(mongoConfig.mongo_uri, {
       useNewUrlParser: true,
       useCreateIndex: true,
