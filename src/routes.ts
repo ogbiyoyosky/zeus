@@ -10,6 +10,14 @@ import permissions from "./middleware/auth/role.middleware";
 
 const router = Router();
 
+router.get(
+  "/welcome", (req, res)=> {
+    return res.status(200).send({
+      message: "welcome to epl api"
+    })
+  }
+);
+
 router.post(
   "/api/auth/register",
   validate.validateBody(validate.schemas.authSchema),
