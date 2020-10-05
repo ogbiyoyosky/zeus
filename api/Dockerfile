@@ -14,6 +14,11 @@ USER root
 
 COPY --chown=node:node . .
 
-EXPOSE 4000
 
-CMD npm run start-dev
+ADD https://github.com/ufoscout/docker-compose-wait/releases/download/2.2.1/wait /wait
+RUN chmod +x /wait
+
+RUN npm run quick-build
+
+CMD npm run serve
+
