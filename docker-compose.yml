@@ -1,12 +1,31 @@
 version: "3"
 
 services:
+  mongo:
+    image: mongo
+    container_name: mongo-dev
+    restart: always
+
+    volumes:
+      - ./data/dev/mongo:/data/db
+    ports:
+      - "27017:27017"
+  redis:
+    image: redis
+    container_name: cache
+    networks:
+      - app-network
+    volumes:
+      - ./redis-data:/data
+    restart: always
+    ports:
+      - "6379:6379"
   api-server:
     build:
       context: ./api
     container_name: api-server
     image: api-server
-    restart: unless-stopped
+    restart: always
     environment:
       - CHOKIDAR_USEPOLLING=1
     depends_on:
@@ -20,23 +39,6 @@ services:
       - app-network
     ports:
       - "4000:4000"
-  mongo:
-    image: mongo
-    container_name: mongo-dev
-    restart: always
-    networks:
-      - app-network
-    volumes:
-      - ./data/dev/mongo:/data/db
-    ports:
-      - "27017:27017"
-  redis:
-    image: redis
-    container_name: cache
-    networks:
-      - app-network
-    ports:
-      - "6379:6379"
 
 networks:
   app-network:
