@@ -11,7 +11,7 @@ const members = Joi.object().keys({
 
 const validator = {
   validateBody: (schema) => (req, res, next) => {
-    logger.info("body", req.body);
+    //logger.info("body", req.body);
     const result = schema.validate(req.body);
 
     if (result.error) {

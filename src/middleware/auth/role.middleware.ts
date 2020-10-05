@@ -2,7 +2,6 @@ import * as httpStatus from "http-status";
 
 const permissions = {
   adminOnly(req, res, next) {
-    console.log(req.role);
     if (req.role === "ADMIN") {
       return next();
     }

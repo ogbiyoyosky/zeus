@@ -18,7 +18,6 @@ const verifyToken = {
     const authToken = token.split(" ")[1];
 
     jwt.verify(authToken, secret, (err, decoded) => {
-      console.log(err);
       if (err) {
         return res.status(httpStatus.UNAUTHORIZED).send({
           message: "Not authorized",
@@ -26,7 +25,7 @@ const verifyToken = {
           status_code: httpStatus.UNAUTHORIZED,
         });
       }
-      console.log(decoded);
+
       // If everything is good, save to request for use in other routes
       req.id = decoded.id;
       req.role = decoded.role;

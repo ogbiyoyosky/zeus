@@ -72,7 +72,6 @@ function verifyRefreshToken(refreshToken) {
     jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, payload) => {
       if (err) return reject(createError.Unauthorized());
       const userId = payload.aud;
-
       redisClient.GET(userId, (err, result) => {
         if (err) {
           //reject(createError.InternalServerError());
