@@ -24,8 +24,8 @@ jobs:
           TEST_MONGO_URI: ${{secrets.TEST_MONGO_URI}}
           NODE_ENV: test
           BASE_URL: ${{secrets.BASE_URL}}
-          APP_SECRET: ${{secrets.APP_SECRET_KEY}}
-          REFRESH_SECRET: ${{secrets.REFRESH_SECRET_KEY}}
+          APP_SECRET_KEY: ${{secrets.APP_SECRET_KEY}}
+          REFRESH_SECRET_KEY: ${{secrets.REFRESH_SECRET_KEY}}
           REDIS_URL: ${{secrets.REDIS_URL}}
           REDIS_PASSWORD: ${{secrets.REDIS_PASSWORD}}
         run: |
