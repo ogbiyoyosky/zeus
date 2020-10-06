@@ -202,6 +202,7 @@ class FixtureController {
         status_code: httpStatus.OK,
       });
     } catch (error) {
+      console.log(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",
         status: "Internal Server Error",
@@ -292,8 +293,6 @@ class FixtureController {
     }
   }
 
-  
-
   /**
    * View all Fixtures
    * @param {Object} req: url params
@@ -303,7 +302,11 @@ class FixtureController {
    * @public
    */
 
-  public static async allFixtures(req: Request, res: Response, next: NextFunction) {
+  public static async allFixtures(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
     try {
       let { page, perPage } = req.query as any;
 
@@ -391,37 +394,44 @@ class FixtureController {
     try {
       const { fixture_id } = req.params;
       const link = uuid();
+      var options = {
+        // Return the document after updates are applied
+        new: true,
+        // Create a document if one isn't found. Required for `setDefaultsOnInsert`
+        upsert: true,
+        setDefaultsOnInsert: true,
+        useFindAndModify: false,
+      };
+      const fixture = await FixtureModel.findByIdAndUpdate(
+        { _id: fixture_id },
+        {
+          $set: {
+            generatedLink: link,
+            modifiedAt: new Date(),
+          },
+        },
+        options
+      ).exec();
 
-      FixtureModel.findOneAndUpdate(
-        {
-          _id: fixture_id,
-        },
-        {
-          generatedLink: link,
-        },
-        { useFindAndModify: false }
-      )
-        .then((fixture) => {
-          return res.status(httpStatus.OK).send({
-            message:
-              "Successfully generated a unique link for the fixture fixture",
-            status: "ok",
-            status_code: httpStatus.OK,
-            results: [
-              {
-                fixture_link: `${process.env.BASE_URL}/api/fixtures/link/${link}`,
-                fixture,
-              },
-            ],
-          });
-        })
-        .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Fixture not found",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+      if (!fixture) {
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Fixture not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
         });
+      }
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully generated a unique link for the fixture fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: [
+          {
+            fixture_link: `${process.env.BASE_URL}/api/fixtures/link/${link}`,
+            fixture,
+          },
+        ],
+      });
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",
@@ -451,7 +461,7 @@ class FixtureController {
         generatedLink: unique_code,
       }).exec();
 
-      if (!fixture)
+      if (!fixture.length)
         return res.status(httpStatus.BAD_REQUEST).send({
           message: "Fixture not found",
           status: "bad request",
