@@ -44,7 +44,8 @@
     "start-dev": "set NODE_ENV=development && nodemon dist/server.js",
     "lint": "tslint src/**/*.ts -p tsconfig.json",
     "lint:fix": "tslint --fix -c tslint.json 'src/**/*{.ts}",
-    "test": "set DEBUG=http:* && set NODE_ENV=development && jest  --runInBand --forceExit --detectOpenHandles",
+    "test": "set NODE_ENV=test && jest  --runInBand --detectOpenHandles --verbose --forceExit ",
+    "coverage": "set NODE_ENV=test && jest --coverage --runInBand --detectOpenHandles --forceExit ",
     "watch-ts": "tsc-watch  --outDir ./dist --onSuccess \"npm run serve\" --lib ES2015 --skipLibCheck"
   },
   "dependencies": {

@@ -70,30 +70,21 @@ class FixtureController {
     try {
       const { fixture_id } = req.params;
 
-      FixtureModel.findOne({ _id: fixture_id })
-        .then((fixture) => {
-          if (!fixture)
-            return res.status(httpStatus.BAD_REQUEST).send({
-              message: "Fixture not found",
-              status: "bad request",
-              status_code: httpStatus.BAD_REQUEST,
-            });
+      const fixture = await FixtureModel.findById({ _id: fixture_id }).exec();
 
-          return res.status(httpStatus.OK).send({
-            message: "Successfully fetched the fixture",
-            status: "ok",
-            status_code: httpStatus.OK,
-            results: [fixture],
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Fixture not found",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+      if (!fixture)
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Fixture not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
         });
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully fetched the fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: [fixture],
+      });
     } catch (error) {
       console.log(error);
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
@@ -183,34 +174,33 @@ class FixtureController {
         // Create a document if one isn't found. Required for `setDefaultsOnInsert`
         upsert: true,
         setDefaultsOnInsert: true,
+        useFindAndModify: false,
       };
 
-      FixtureModel.findOneAndUpdate(
+      const fixture = await FixtureModel.findByIdAndUpdate(
+        { _id: fixture_id },
         {
-          _id: fixture_id,
-        },
-        {
-          ...req.body,
-          modifiedAt: new Date(),
+          $set: {
+            ...req.body,
+            modifiedAt: new Date(),
+          },
         },
         options
-      )
-        .then((team) => {
-          return res.status(httpStatus.OK).send({
-            message: "Successfully  updated the Fixture",
-            status: "ok",
-            status_code: httpStatus.OK,
-            results: [team],
-          });
-        })
-        .catch((err) => {
-          console.log(err);
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Fixture not found",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+      ).exec();
+
+      if (!fixture) {
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Fixture not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
         });
+      }
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  updated the Fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+      });
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",
@@ -318,29 +308,24 @@ class FixtureController {
   ) {
     try {
       const { fixture_id } = req.params;
-      FixtureModel.findOneAndDelete(
-        {
-          _id: fixture_id,
-        },
-        {
-          ...req.body,
-          deletedAt: new Date(),
-        }
-      )
-        .then((fixture) => {
-          return res.status(httpStatus.OK).send({
-            message: "Successfully deleted the the fixture",
-            status: "ok",
-            status_code: httpStatus.OK,
-          });
-        })
-        .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Fixture not found",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+
+      const fixture = await FixtureModel.findByIdAndDelete({
+        _id: fixture_id,
+      }).exec();
+
+      if (!fixture) {
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Fixture not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
         });
+      }
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully deleted the fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+      });
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",
@@ -374,7 +359,8 @@ class FixtureController {
         },
         {
           generatedLink: link,
-        }
+        },
+        { useFindAndModify: false }
       )
         .then((fixture) => {
           return res.status(httpStatus.OK).send({
