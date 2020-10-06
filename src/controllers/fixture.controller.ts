@@ -292,6 +292,45 @@ class FixtureController {
     }
   }
 
+  
+
+  /**
+   * View all Fixtures
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+
+  public static async allFixtures(req: Request, res: Response, next: NextFunction) {
+    try {
+      let { page, perPage } = req.query as any;
+
+      perPage = perPage ? parseInt(perPage, 10) : 10;
+      page = page ? parseInt(page, 10) : 1;
+      const teams = await FixtureModel.find()
+        .skip((page - 1) * perPage)
+        .limit(perPage)
+        .sort({ createdAt: -1 })
+        .exec();
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully  fetched all fixtures",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: teams,
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
+
   /**
    * Delete a Fixture
    * @param {Object} req: url params
@@ -423,7 +462,7 @@ class FixtureController {
         message: "Successfully fetched the fixture",
         status: "ok",
         status_code: httpStatus.OK,
-        results: [fixture],
+        results: fixture,
       });
     } catch (error) {
       console.log(error);
