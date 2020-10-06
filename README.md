@@ -1,6 +1,6 @@
 [![Actions Status: Node.js CI](https://github.com/ogbiyoyosky/zeus/workflows/Node.js%20CI/badge.svg)](https://github.com/ogbiyoyosky/zeus/actions?query=workflow%3A"Node.js+CI")
 
-# Zeus App
+# Zeus API
 
 I have a habit of name my repositories after greek gods.
 What does this god do?
