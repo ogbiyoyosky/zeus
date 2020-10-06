@@ -12,8 +12,6 @@ import TeamModel from "../models/Team";
   await TeamModel.deleteMany({});
 })();
 
-console.log(process.env);
-
 auth();
 team();
 fixture();
