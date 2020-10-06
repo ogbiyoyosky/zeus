@@ -1,20 +1,18 @@
 import jwt from "jsonwebtoken";
+import jwtConfig from "../config/jwt";
 const createError = require("http-errors");
 import { redisClient } from "../redis-connection";
 
 function signAccessToken(payload) {
-  console.log(payload);
   return new Promise((resolve, reject) => {
-    const secret = process.env.APP_SECRET_KEY;
+    const secret = jwtConfig.appKey;
 
-    console.log("secret", secret);
     const options = {
       expiresIn: "24h",
       issuer: "zeus",
       audience: payload.id,
     };
     jwt.sign(payload, secret, options, (err, token) => {
-      console.log(payload, secret, options);
       if (err) {
         reject(createError.InternalServerError());
         return;
@@ -26,17 +24,14 @@ function signAccessToken(payload) {
 
 function signRefreshToken(payload) {
   return new Promise((resolve, reject) => {
-    const secret = process.env.REFRESH_SECRET_KEY;
+    const secret = jwtConfig.refreshTokenKey;
 
-    console.log(secret);
     const options = {
       expiresIn: "1y",
       issuer: "zeus",
       audience: payload.id,
     };
     jwt.sign(payload, secret, options, (err, token) => {
-      console.log(payload, secret, options);
-
       if (err) {
         console.log(err);
         reject(createError.InternalServerError());
@@ -64,7 +59,7 @@ function verifyAccessToken(req, res, next) {
   const authHeader = req.headers["authorization"];
   const bearerToken = authHeader.split(" ");
   const token = bearerToken[1];
-  jwt.verify(token, process.env.APP_SECRET_KEY, (err, payload) => {
+  jwt.verify(token, jwtConfig.appKey, (err, payload) => {
     if (err) {
       const message =
         err.name === "JsonWebTokenError" ? "Unauthorized" : err.message;
@@ -77,7 +72,7 @@ function verifyAccessToken(req, res, next) {
 
 function verifyRefreshToken(refreshToken) {
   return new Promise((resolve, reject) => {
-    jwt.verify(refreshToken, process.env.REFRESH_SECRET_KEY, (err, payload) => {
+    jwt.verify(refreshToken, jwtConfig.refreshTokenKey, (err, payload) => {
       if (err) return reject(createError.Unauthorized());
       const userId = payload.aud;
       redisClient.GET(userId, (err, result) => {
