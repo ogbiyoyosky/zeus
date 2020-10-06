@@ -77,7 +77,7 @@ function verifyRefreshToken(refreshToken) {
       const userId = payload.aud;
       redisClient.GET(userId, (err, result) => {
         if (err) {
-          //reject(createError.InternalServerError());
+          reject(createError.InternalServerError());
           return;
         }
 

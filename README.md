@@ -1,4 +1,6 @@
-# Zeus App
+[![Actions Status: Node.js CI](https://github.com/ogbiyoyosky/zeus/workflows/Node.js%20CI/badge.svg)](https://github.com/ogbiyoyosky/zeus/actions?query=workflow%3A"Node.js+CI")
+
+#Zeus App
 
 I have a habit of name my repositories after greek gods.
 What does this god do?
@@ -62,7 +64,9 @@ run `docker-compose up --build`
 
 The above command spin up mongodb, redis and the application.
 
-### API DOCUMENTATION
+### API DOCUMENTATION URL
+
+https://documenter.getpostman.com/view/6226738/TVRhboz8
 
 ## AUTHOR
 
