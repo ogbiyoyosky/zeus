@@ -391,5 +391,48 @@ class FixtureController {
       });
     }
   }
+
+  /**
+   * View fixture by generated link
+   * @param {Object} req: url params
+   * @param {Function} res: Express.js response callback
+   * @param {Function} next: Express.js middleware callback
+   * @author Emmanuel Ogbiyoyo
+   * @public
+   */
+  public static async getFixtureByLink(
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) {
+    try {
+      const { unique_code } = req.params;
+
+      const fixture = await FixtureModel.find({
+        generatedLink: unique_code,
+      }).exec();
+
+      if (!fixture)
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Fixture not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
+        });
+
+      return res.status(httpStatus.OK).send({
+        message: "Successfully fetched the fixture",
+        status: "ok",
+        status_code: httpStatus.OK,
+        results: [fixture],
+      });
+    } catch (error) {
+      console.log(error);
+      return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
+        message: "Internal Server Error",
+        status: "Internal Server Error",
+        status_code: httpStatus.INTERNAL_SERVER_ERROR,
+      });
+    }
+  }
 }
 export default FixtureController;

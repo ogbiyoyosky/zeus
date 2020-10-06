@@ -11,6 +11,7 @@ let InvalidToken;
 let invalidRefreshToken = "nfjfnkrfmfkmkmfkmffmmfmmf";
 let refreshToken;
 let fixtureId;
+let generateLink;
 export default () => {
   describe("Fixture  Mangement", () => {
     test("should authenticate an admin", async (done) => {
@@ -70,10 +71,21 @@ export default () => {
         .get(`/api/fixtures/${fixtureId}/generate-link`)
         .set("authorization", `Bearer ${adminToken}`);
 
+      generateLink = res.body.results[0].fixture.generatedLink;
+
       expect((res as any).status).toBe(200);
       expect((res as any).body.message).toBe(
         "Successfully generated a unique link for the fixture fixture"
       );
+      done();
+    });
+
+    test("should view a generated fixture link", async (done) => {
+      const res: any = await makeRequest
+        .get(`/api/fixtures/link/${generateLink}`)
+        .set("authorization", `Bearer ${adminToken}`);
+      expect((res as any).status).toBe(200);
+
       done();
     });
 

@@ -177,4 +177,12 @@ router.get(
   FixtureController.generateLink
 );
 
+/**
+ * @getFixtureByLink
+ */
+router.get(
+  "/api/fixtures/link/:unique_code",
+  FixtureController.getFixtureByLink
+);
+
 export default router;
