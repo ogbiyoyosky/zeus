@@ -29,7 +29,9 @@ function signRefreshToken(payload) {
       audience: payload.id,
     };
     jwt.sign(payload, secret, options, (err, token) => {
+      console.log(payload, secret, options);
       if (err) {
+        console.log(err);
         reject(createError.InternalServerError());
         return;
       }
