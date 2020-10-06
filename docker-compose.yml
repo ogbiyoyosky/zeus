@@ -40,4 +40,4 @@ services:
 
 networks:
   app-network:
-    driver: bridge
+    # driver: bridge
