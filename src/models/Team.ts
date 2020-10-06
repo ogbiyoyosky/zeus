@@ -16,37 +16,10 @@ export interface ITeam extends Document {
   deletedAt: Date;
 }
 
-var teamEnum = {
-  values: [
-    "AFC Bournemouth",
-    "Arsenal",
-    "Aston Villa",
-    "Brighton & Hove Albion",
-    "Burnley",
-    "Chelsea",
-    "Crystal Palace",
-    "Everton",
-    "Leicester City",
-    "Liverpool",
-    "Manchester City",
-    "Manchester United",
-    "Newcastle United",
-    "Norwich City",
-    "Sheffield United",
-    "Southampton",
-    "Tottenham Hotspur",
-    "Watford",
-    "Westham United",
-    "Wolverhampton Wanderers",
-  ],
-  message: "Provide a valid premier league team",
-};
-
 export let TeamSchema: Schema = new Schema({
   teamName: {
     type: String,
     required: "Team Name is required",
-    enum: teamEnum,
     unique: true,
   },
   location: {
