@@ -232,6 +232,7 @@ class TeamController {
         // Create a document if one isn't found. Required for `setDefaultsOnInsert`
         upsert: true,
         setDefaultsOnInsert: true,
+        useFindAndModify: false,
       };
 
       TeamModel.findOneAndUpdate(
@@ -285,29 +286,20 @@ class TeamController {
   ) {
     try {
       const { team_id } = req.params;
-      TeamModel.findOneAndDelete(
-        {
-          _id: team_id,
-        },
-        {
-          ...req.body,
-          deletedAt: new Date(),
-        }
-      )
-        .then((team) => {
-          return res.status(httpStatus.OK).send({
-            message: "Successfully deleted the team",
-            status: "ok",
-            status_code: httpStatus.OK,
-          });
-        })
-        .catch((err) => {
-          return res.status(httpStatus.BAD_REQUEST).send({
-            message: "Team not found",
-            status: "bad request",
-            status_code: httpStatus.BAD_REQUEST,
-          });
+
+      const team = await TeamModel.findByIdAndDelete({ _id: team_id }).exec();
+      if (!team) {
+        return res.status(httpStatus.BAD_REQUEST).send({
+          message: "Team not found",
+          status: "bad request",
+          status_code: httpStatus.BAD_REQUEST,
         });
+      }
+      return res.status(httpStatus.OK).send({
+        message: "Successfully deleted the team",
+        status: "ok",
+        status_code: httpStatus.OK,
+      });
     } catch (error) {
       return res.status(httpStatus.INTERNAL_SERVER_ERROR).send({
         message: "Internal Server Error",

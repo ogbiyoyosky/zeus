@@ -12,7 +12,6 @@ function signAccessToken(payload) {
     };
     jwt.sign(payload, secret, options, (err, token) => {
       if (err) {
-        console.log(err.message);
         reject(createError.InternalServerError());
         return;
       }

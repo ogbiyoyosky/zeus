@@ -37,9 +37,9 @@ class UserController {
         role: "USER",
       })
         .then((user) => {
-          logger.info("User Account asuccessfully created");
+          logger.info("User Account successfully created");
           return res.status(httpStatus.CREATED).send({
-            message: "Account asuccessfully created",
+            message: "Account successfully created",
             status: "created",
             status_code: httpStatus.CREATED,
           });
@@ -86,7 +86,7 @@ class UserController {
         role: "ADMIN",
       })
         .then((user) => {
-          logger.info("Admin Account asuccessfully created");
+          logger.info("Admin Account successfully created");
 
           return res.status(httpStatus.CREATED).send({
             message: "Account successfully created",
