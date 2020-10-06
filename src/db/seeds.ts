@@ -9,6 +9,8 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
+console.log(process.env);
+
 const client = {
   connect: async () => {
     try {
@@ -30,11 +32,11 @@ const client = {
   disconnect: () => mongoose.disconnect(),
 };
 
-async function clear() {
+(async function clear() {
   await FixtureModel.deleteMany({});
   await UserModel.deleteMany({});
   await TeamModel.deleteMany({});
-}
+})();
 
 function seedUser(randomSeed, numData) {
   faker.seed(randomSeed);
@@ -249,7 +251,6 @@ async function seedTeams() {
 function runProgram() {
   return client
     .connect()
-    .then(() => clear())
     .then(() => seedUser(12379880900, 5))
     .then(() => seedTeams())
     .then(() => seedFixture())
