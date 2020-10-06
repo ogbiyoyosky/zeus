@@ -178,6 +178,11 @@ router.get(
 );
 
 /**
+ * @fetchAllFixtures
+ */
+router.get("/api/fixtures", verifyToken.verify, FixtureController.allFixtures);
+
+/**
  * @getFixtureByLink
  */
 router.get(

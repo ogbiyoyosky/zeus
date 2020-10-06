@@ -99,6 +99,18 @@ export default () => {
       done();
     });
 
+    test("should view all fixtures", async (done) => {
+      const res: any = await makeRequest
+        .get(`/api/fixtures/`)
+        .set("authorization", `Bearer ${adminToken}`);
+
+      expect((res as any).status).toBe(200);
+      expect((res as any).body.message).toBe(
+        "Successfully  fetched all fixtures"
+      );
+      done();
+    });
+
     test("should edit a particular team", async (done) => {
       const res: any = await makeRequest
         .put(`/api/fixtures/${fixtureId}`)
