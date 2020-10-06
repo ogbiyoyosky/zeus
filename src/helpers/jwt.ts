@@ -3,14 +3,18 @@ const createError = require("http-errors");
 import { redisClient } from "../redis-connection";
 
 function signAccessToken(payload) {
+  console.log(payload);
   return new Promise((resolve, reject) => {
     const secret = process.env.APP_SECRET_KEY;
+
+    console.log("secret", secret);
     const options = {
       expiresIn: "24h",
       issuer: "zeus",
       audience: payload.id,
     };
     jwt.sign(payload, secret, options, (err, token) => {
+      console.log(payload, secret, options);
       if (err) {
         reject(createError.InternalServerError());
         return;
@@ -23,6 +27,8 @@ function signAccessToken(payload) {
 function signRefreshToken(payload) {
   return new Promise((resolve, reject) => {
     const secret = process.env.REFRESH_SECRET_KEY;
+
+    console.log(secret);
     const options = {
       expiresIn: "1y",
       issuer: "zeus",
