@@ -66,7 +66,7 @@ The above command spin up mongodb, redis and the application.
 
 ### API DOCUMENTATION URL
 
-https://documenter.getpostman.com/view/6226738/TVRhboz8
+https://documenter.getpostman.com/view/6226738/TVRhbpHg
 
 ## AUTHOR
 
