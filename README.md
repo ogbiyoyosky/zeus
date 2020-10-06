@@ -1,10 +1,11 @@
 # Zeus App
 
-Create an API that serves the latest scores of fixtures of matches in a “**Mock Premier League**”
+I have a habit of name my repositories after greek gods.
+What does this god do?
 
-## User Types
+This god is an API that mock matches in a “**Mock Premier League**”
 
-There should be:
+## Features
 
 - **Admin accounts** which are used to
   - signup/login
@@ -34,13 +35,35 @@ There should be:
 - Jest
 - Express
 
-## Tests
+## Starting the application locally
 
-]
+1. Clone repo
 
-## Submission
+`git clone https://github.com/ogbiyoyosky/zeus.git`
 
-1. Your API endpoints should be documented in POSTMAN.
-2. Seed the db with lots of data before final submission.
-3. Code should be hosted on a git repository, Github preferably.
-4. The API should be hosted on a live server (e.g. https://heroku.com)
+2. run `npm install`
+
+3. create a .env
+
+4. `npm run seed`
+
+5. run `npm run dev`
+
+#### Running test
+
+    1. `npm test'
+    2. 'npm run coverage`
+
+## Starting application docker-compose
+
+building the app
+
+run `docker-compose up --build`
+
+The above command spin up mongodb, redis and the application.
+
+### API DOCUMENTATION
+
+## AUTHOR
+
+Ogbiyoyo, Emmanuel Ighosode
